@@ -37,15 +37,20 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    openApiGenerate {
-        generatorName = "kotlin"
-        inputSpec = "${projectDir.path}/movie-db-api.yaml"
-        additionalProperties = [
-                "library": "jvm-retrofit2",
-                "serializationLibrary": "kotlinx_serialization",
-                "useCoroutines": "true"
-        ]
-    }
+}
+
+openApiGenerate {
+    generatorName = "kotlin"
+    inputSpec = "$rootDir/docs/api.yml".toString()
+    outputDir = "$buildDir/generated".toString()
+    packageName = "com.ggr3ml1n.moretech50.api"
+    apiPackage = "com.ggr3ml1n.moretech50.api.generated.api"
+    modelPackage = "com.ggr3ml1n.moretech50.api.generated.model"
+    additionalProperties = [
+            "library": "jvm-retrofit2",
+            "serializationLibrary": "kotlinx_serialization",
+            "useCoroutines": "true"
+    ]
 }
 
 dependencies {
@@ -69,4 +74,7 @@ dependencies {
     //navigation api
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.4'
+
+    //location
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
