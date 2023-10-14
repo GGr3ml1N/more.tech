@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--    <color name="">#FFFFFFFF</color>-->
-    <!--    main colors -->
-    <color name="firm_vtb">#002882</color>
-    <color name="dark_blue">#33539B</color>
-    <color name="blue">#667EB4</color>
-    <color name="light_blue">#99A9CD</color>
-    <color name="more_light_blue">#CCD4E6</color>
+    <!-- <color name="">#FFFFFFFF</color>-->
+    <!-- main colors -->
+    <color name="blue_100">#002882</color>
+    <color name="blue_80">#33539B</color>
+    <color name="blue_60">#667EB4</color>
+    <color name="blue_40">#99A9CD</color>
+    <color name="blue_20">#CCD4E6</color>
 
-    <!--    cyan -->
-    <color name="main_cyan">#00AAFF</color>
-    <color name="cyan">#98DDFC</color>
-    <color name="light_cyan">#E5F6ff</color>
+    <!-- cyan -->
+    <color name="cyan_100">#00AAFF</color>
+    <color name="cyan_40">#98DDFC</color>
+    <color name="cyan_20">#E5F6ff</color>
 
-<!--    white-black -->
+    <!-- white-black -->
     <color name="black">#000000</color>
-    <color name="dark_gray">#58595B</color>
-    <color name="gray">#878787</color>
-    <color name="light_gray">#C5C7C8</color>
+    <color name="gray_cool_10">#58595B</color>
+    <color name="gray_cool_8">#878787</color>
+    <color name="gray_cool_6">#C5C7C8</color>
     <color name="white">#FFFFFF</color>
 
-    <!--   indicators  -->
+    <!-- indicators -->
     <color name="red_ind">#CA181F</color>
     <color name="yellow_ind">#F1A038</color>
     <color name="green_ind">#4CC864</color>

@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.ggr3ml1n.moretech50'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.ggr3ml1n.moretech50"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
