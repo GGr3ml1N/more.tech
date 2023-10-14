@@ -14,15 +14,22 @@ import com.yandex.mapkit.map.CameraPosition
 class MapFragment : Fragment() {
 
     private var _binding: FragmentMapBinding? = null
-                                                    //временные значения, нужно понять что тут поставить
+    private val binding get() = _binding!!
+
+    //временные значения, нужно понять что тут поставить
     private val latitudeMap = arguments?.latitude ?: 59.0
     private val longitudeMap = arguments?.longitude ?: 30.0
-    private val binding get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMapBinding.inflate(inflater, container, false)
+        return binding.root }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val zoomMap = arguments?.zoom?:8.0f
 
         with(binding) {
@@ -42,8 +49,6 @@ class MapFragment : Fragment() {
                 //TODO
             }
         }
-
-        return binding.root
     }
 
     override fun onStart() {
