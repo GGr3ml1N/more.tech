@@ -34,11 +34,11 @@ class MapFragment : Fragment() {
                 ), null
             )
 
-            filter.setOnClickListener {
+            filter.setOnClickListener {//фильтр по услугам
                 //TODO
             }
 
-            whereAmI.setOnClickListener {
+            whereAmI.setOnClickListener {//показывает, где пользователь
                 //TODO
             }
         }
