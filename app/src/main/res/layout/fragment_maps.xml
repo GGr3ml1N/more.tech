@@ -19,8 +19,11 @@
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
-        android:drawableStart=""
+        android:drawableStart="@drawable/baseline_assignment_24"
+        android:drawableTint="@color/white"
+        android:drawablePadding="4dp"
         android:text="Выбрать услуги"
+        android:backgroundTint="@color/blue_100"
         />
 
     <ImageButton
