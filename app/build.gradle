@@ -1,16 +1,17 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id "org.openapi.generator"
 }
 
 android {
     namespace 'com.ggr3ml1n.moretech50'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.ggr3ml1n.moretech50"
         minSdk 26
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -29,6 +30,18 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding = true
+    }
+    openApiGenerate {
+        generatorName = "kotlin"
+        inputSpec = "${projectDir.path}/movie-db-api.yaml"
+        additionalProperties = [
+                "library": "jvm-retrofit2",
+                "serializationLibrary": "kotlinx_serialization",
+                "useCoroutines": "true"
+        ]
     }
 }
 
