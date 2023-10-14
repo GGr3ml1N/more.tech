@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.yandex.mapkit.Animation
 import com.ggr3ml1n.moretech50.databinding.FragmentMapBinding
+import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 
@@ -43,6 +44,18 @@ class MapFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        MapKitFactory.getInstance().onStart()
+        binding.mapVTB.onStart()
+    }
+
+    override fun onStop() {
+        binding.mapVTB.onStop()
+        MapKitFactory.getInstance().onStop()
+        super.onStop()
     }
 
     companion object {
