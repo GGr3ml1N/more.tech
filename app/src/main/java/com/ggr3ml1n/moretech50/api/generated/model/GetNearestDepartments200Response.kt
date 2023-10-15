@@ -15,8 +15,11 @@
 
 package com.ggr3ml1n.moretech50.api.generated.model
 
-import kotlinx.serialization.SerialName
+import com.ggr3ml1n.moretech50.api.generated.model.DepartmentDto
+
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Contextual
 
 /**
  * 

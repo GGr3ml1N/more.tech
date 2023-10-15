@@ -1,0 +1,339 @@
+openapi: "3.0.0"
+
+info:
+  title: API for system
+  version: 0.0.1
+
+servers:
+  - url: http://locahost:8080
+
+tags:
+  - name: ATM
+    description: Everything about ATMs
+  - name: Department
+    description: Everything about Departments
+
+
+paths:
+
+  /atm:
+    get:
+      description: List all Departments
+      operationId: GetATMList
+      tags:
+        - ATM
+      parameters:
+        - $ref: '#/components/parameters/FilterParam'
+        - $ref: '#/components/parameters/PageNumberParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+        - $ref: '#/components/parameters/SortingFieldParam'
+        - $ref: '#/components/parameters/SortingDirectionParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetATMList'
+
+
+  /atm/nearest:
+    post:
+      description: Get the nearest ATMs
+      operationId: GetNearestATMs
+      tags:
+        - ATM
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetATMList'
+
+
+  /departments:
+    get:
+      description: List all Departments
+      operationId: GetDepartmentList
+      tags:
+        - Department
+      parameters:
+        - $ref: '#/components/parameters/FilterParam'
+        - $ref: '#/components/parameters/PageNumberParam'
+        - $ref: '#/components/parameters/PageSizeParam'
+        - $ref: '#/components/parameters/SortingFieldParam'
+        - $ref: '#/components/parameters/SortingDirectionParam'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDepartmentList'
+
+
+  /departments/nearest:
+    post:
+      description: Get the nearest departments
+      operationId: GetNearestDepartments
+      tags:
+        - Department
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetDepartmentNearestList'
+
+components:
+
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+
+  schemas:
+    PageDto:
+      description: List of PublisherDto with pagination info
+      required:
+        - page
+        - totalPages
+        - pageSize
+      properties:
+        page:
+          description: Current page
+          type: integer
+          format: int32
+        filter:
+          $ref: '#/components/schemas/FilterDto'
+        totalPages:
+          description: Total page
+          type: integer
+          format: int32
+        pageSize:
+          description: Quantity of records per page
+          type: integer
+          format: int32
+        totalRows:
+          description: total numbers of rows for the request
+          type: integer
+          format: int64
+        sortField:
+          description: sorting field
+          type: string
+        sortDir:
+          description: sorting direction
+          type: string
+          enum: [ ASC, DESC ]
+
+    FilterDto:
+      type: object
+      properties:
+        city.name:
+          type: string
+        user.latitude:
+          type: integer
+          format: double
+        user.longitude:
+          type: integer
+          format: double
+
+    UserDto:
+      type: object
+      properties:
+        longitude:
+          type: number
+          format: double
+          example: 30.3141300
+        latitude:
+          type: number
+          format: double
+          example: 59.9386300
+
+    ATMDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        address:
+          type: string  
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: integer
+          format: double
+        allDay:
+          type: boolean
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceDto'
+
+    ServiceDto:
+      type: object
+      properties:
+        name:
+          type: string
+        serviceCapability:
+          type: string
+          enum: [ SUPPORTED, UNSUPPORTED, UNKNOWN ]
+        serviceActivity:
+          type: string
+          enum: [ SUPPORTED, UNSUPPORTED, UNKNOWN ]
+
+    DepartmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        salePointName:
+          type: string
+        address:
+          type: string
+        rko:
+          type: string
+        officeType:
+          type: string
+        salePointFormat:
+          type: string
+        suoAvailability:
+          type: string
+        hasRamp:
+          type: string
+        network:
+          type: string
+        salePointCode:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        metroStation:
+          type: string
+        distance:
+          type: integer
+          format: int64
+        kep:
+          type: boolean
+        myBranch:
+          type: boolean
+
+
+  responses:
+
+    GetATMList:
+      description: List of OrderDto with pagination info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              records:
+                description: List of records to show
+                type: array
+                items:
+                  $ref: '#/components/schemas/ATMDto'
+            allOf:
+              - $ref: '#/components/schemas/PageDto'
+
+    GetDepartmentList:
+      description: List of OrderDto with pagination info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              records:
+                description: List of records to show
+                type: array
+                items:
+                  $ref: '#/components/schemas/DepartmentDto'
+            allOf:
+              - $ref: '#/components/schemas/PageDto'
+
+    GetDepartmentNearestList:
+      description: List of OrderDto with pagination info
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              records:
+                description: List of records to show
+                type: array
+                items:
+                  $ref: '#/components/schemas/DepartmentDto'
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                description: Message what exactly not found
+                type: string
+              content:
+                description: Optional content
+                type: object
+
+  parameters:
+    PageNumberParam:
+      in: query
+      description: Page number
+      name: pageNumber
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 0
+
+    PageSizeParam:
+      in: query
+      description: Page size
+      name: pageSize
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 10
+
+    SortingFieldParam:
+      in: query
+      description: Sorting field
+      name: sortBy
+      required: false
+      schema:
+        type: string
+        default: id
+
+    SortingDirectionParam:
+      in: query
+      description: Sorting direction
+      name: sortDir
+      required: false
+      schema:
+        type: string
+        enum: [ "ASC", "DESC" ]
+        default: "ASC"
+
+    FilterParam:
+      in: query
+      description: Filter field
+      name: filter
+      required: false
+      explode: false
+      schema:
+        $ref: '#/components/schemas/FilterDto'
+
+    IdPathParam:
+      in: path
+      description: Id of record to operate
+      name: id
+      required: true
+      schema:
+        type: integer
+        format: int64

@@ -1,0 +1,3 @@
+[submodule "moreTech"]
+	path = moreTech
+	url = https://github.com/maratovS/moreTech.git
