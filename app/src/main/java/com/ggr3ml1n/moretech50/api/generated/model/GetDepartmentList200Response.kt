@@ -15,12 +15,8 @@
 
 package com.ggr3ml1n.moretech50.api.generated.model
 
-import com.ggr3ml1n.moretech50.api.generated.model.DepartmentDto
-import com.ggr3ml1n.moretech50.api.generated.model.FilterDto
-
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 
 /**
  * 
