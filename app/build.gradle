@@ -4,6 +4,8 @@ plugins {
     id "org.openapi.generator"
 }
 
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 android {
     namespace 'com.ggr3ml1n.moretech50'
     compileSdk 34
@@ -37,12 +39,17 @@ android {
         viewBinding = true
         buildConfig = true
     }
+    sourceSets.main.kotlin.srcDirs += "${buildDir.path}/openapi"
+    tasks.preBuild {
+        dependsOn(tasks.withType(GenerateTask))
+    }
 }
 
 openApiGenerate {
     generatorName = "kotlin"
     inputSpec = "$rootDir/docs/api.yml".toString()
     outputDir = "$buildDir/generated".toString()
+    ignoreFileOverride = "$rootDir/docs/openapi-generator-ignore".toString()
     packageName = "com.ggr3ml1n.moretech50.api"
     apiPackage = "com.ggr3ml1n.moretech50.api.generated.api"
     modelPackage = "com.ggr3ml1n.moretech50.api.generated.model"
@@ -84,4 +91,7 @@ dependencies {
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
+    implementation 'com.squareup.okhttp3:okhttp3:4.7.2'
 }

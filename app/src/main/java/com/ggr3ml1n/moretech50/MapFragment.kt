@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.ggr3ml1n.moretech50.api.generated.api.DepartmentApi
 import com.ggr3ml1n.moretech50.databinding.FragmentMapBinding
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
@@ -21,6 +22,9 @@ import com.yandex.mapkit.user_location.UserLocationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class MapFragment : Fragment(), UserLocationObjectListener {
 
@@ -78,6 +82,10 @@ class MapFragment : Fragment(), UserLocationObjectListener {
         binding.filter.setOnClickListener {//фильтр по услугам
             //TODO
         }
+        val retrofit = Retrofit.Builder()
+            .baseUrl("")
+            .addConverterFactory(GsonConverterFactory.create()).build()
+        val productApi = retrofit.create(DepartmentApi::class.java)
     }
 
     private fun updateCamera() {
