@@ -1,13 +1,14 @@
 package com.ggr3ml1n.moretech50
 
-import android.Manifest
-import android.content.Intent
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.pm.PackageManager.PERMISSION_DENIED
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.ggr3ml1n.moretech50.api.generated.api.DepartmentApi
 import com.ggr3ml1n.moretech50.databinding.FragmentMapBinding
@@ -56,27 +57,15 @@ class MapFragment : Fragment(), UserLocationObjectListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ),
-            0
-        )
-
         userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(binding.mapVTB.mapWindow)
         userLocationLayer.isVisible = true
         userLocationLayer.isHeadingEnabled = true
-        userLocationLayer.setObjectListener(this@MapFragment)
+        userLocationLayer.setObjectListener(this)
 
         updateCamera()
 
         binding.whereAmI.setOnClickListener {//показывает, где пользователь
-            Log.d("Service", "Service started")
-            Intent(requireActivity().applicationContext, LocationService::class.java).apply {
-                updateCamera()
-            }
+            updateCamera()
         }
 
         binding.filter.setOnClickListener {//фильтр по услугам
@@ -89,6 +78,15 @@ class MapFragment : Fragment(), UserLocationObjectListener {
     }
 
     private fun updateCamera() {
+        val context = requireContext()
+
+        if (ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PERMISSION_DENIED
+            || ContextCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PERMISSION_DENIED) {
+
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION), 0)
+        }
+
         if (userLocationLayer.cameraPosition() != null) {
             userLocation = userLocationLayer.cameraPosition()!!.target
             binding.mapVTB.map.move(
