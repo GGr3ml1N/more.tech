@@ -9,41 +9,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import com.ggr3ml1n.moretech50.databinding.FragmentMapBinding
-import com.google.android.gms.location.LocationServices
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.layers.ObjectEvent
 import com.yandex.mapkit.map.CameraPosition
+import com.yandex.mapkit.user_location.UserLocationLayer
+import com.yandex.mapkit.user_location.UserLocationObjectListener
+import com.yandex.mapkit.user_location.UserLocationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 
-class MapFragment : Fragment() {
+class MapFragment : Fragment(), UserLocationObjectListener {
 
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
 
     //private val viewModel: MapFragmentViewModel by viewModels()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val defaultLocation = Point(55.7522, 37.6156)
 
-    private lateinit var locationClient: LocationClient
-
-    //временные значения, нужно понять что тут поставить
-//    private val latitudeMap = arguments?.latitude ?: 59.0
-//    private val longitudeMap = arguments?.longitude ?: 30.0
+    private lateinit var userLocationLayer: UserLocationLayer
+    private var userLocation = defaultLocation
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
-        locationClient = DefaultLocationClient(
-            activity?.applicationContext!!,
-            LocationServices.getFusedLocationProviderClient(activity?.applicationContext!!)
-        )
+        MapKitFactory.initialize(context)
     }
 
     override fun onCreateView(
@@ -66,45 +61,44 @@ class MapFragment : Fragment() {
             0
         )
 
-        val zoomMap = arguments?.zoom ?: 8.0f
+        userLocationLayer = MapKitFactory.getInstance().createUserLocationLayer(binding.mapVTB.mapWindow)
+        userLocationLayer.isVisible = true
+        userLocationLayer.isHeadingEnabled = true
+        userLocationLayer.setObjectListener(this@MapFragment)
 
-        var lat = 0.0
-        var long = 0.0
+        updateCamera()
 
-        locationClient
-            .getLocationsUpdate(10000L)
-            .catch { e ->
-                e.printStackTrace()
-            }
-            .onEach { location ->
-                lat = location.latitude
-                long = location.longitude
-                Log.d("Location", "Location: ($lat, $long)")
-            }
-            .launchIn(serviceScope)
-
-        with(binding) {
-
-            mapVTB.map.move( //пермещение карты
-                CameraPosition(
-                    Point(lat, long), zoomMap, 0.0f, 0.0f
-                ), Animation(
-                    Animation.Type.SMOOTH, 5f
-                ), null
-            )
-
-            filter.setOnClickListener {//фильтр по услугам
-                //TODO
-            }
-
-            whereAmI.setOnClickListener {//показывает, где пользователь
-                Log.d("Service", "Service started")
-                Intent(requireActivity().applicationContext, LocationService::class.java).apply {
-                    action = LocationService.ACTION_START
-                    activity?.startService(this@apply)
-                }
+        binding.whereAmI.setOnClickListener {//показывает, где пользователь
+            Log.d("Service", "Service started")
+            Intent(requireActivity().applicationContext, LocationService::class.java).apply {
+                updateCamera()
             }
         }
+
+        binding.filter.setOnClickListener {//фильтр по услугам
+            //TODO
+        }
+    }
+
+    private fun updateCamera() {
+        if (userLocationLayer.cameraPosition() != null) {
+            userLocation = userLocationLayer.cameraPosition()!!.target
+            binding.mapVTB.map.move(
+                CameraPosition(userLocation, 14f, 0f, 0f), Animation(Animation.Type.SMOOTH, 1f), null
+            )
+        } else {
+            binding.mapVTB.map.move(CameraPosition(defaultLocation, 14f, 0f, 0f))
+        }
+    }
+
+    override fun onObjectAdded(p0: UserLocationView) {
+        updateCamera()
+    }
+
+    override fun onObjectRemoved(p0: UserLocationView) { }
+
+    override fun onObjectUpdated(p0: UserLocationView, p1: ObjectEvent) {
+        updateCamera()
     }
 
     override fun onStart() {
@@ -118,7 +112,6 @@ class MapFragment : Fragment() {
         MapKitFactory.getInstance().onStop()
         super.onStop()
     }
-
 
     companion object {
         @JvmStatic
